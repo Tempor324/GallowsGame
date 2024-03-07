@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34622.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GallowsGame", "GallowsGame\GallowsGame.csproj", "{52180383-6FCD-4EC9-B8EF-C80EBE857E24}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{50119AB6-AE1A-4507-9EB6-7BF3B3A0147B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{52180383-6FCD-4EC9-B8EF-C80EBE857E24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52180383-6FCD-4EC9-B8EF-C80EBE857E24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52180383-6FCD-4EC9-B8EF-C80EBE857E24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52180383-6FCD-4EC9-B8EF-C80EBE857E24}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {47D25B98-C350-4ED2-ADB8-244FEEC5E093}
+	EndGlobalSection
+EndGlobal
