@@ -20,7 +20,7 @@ namespace GallowsGame
         }
 
         public int NumberOfAttemps { get; private set; } = 0;
-        public List<char> UserInput { get; private set; } = new List<char>(); 
+        public List<char> UserInputList { get; private set; } = new List<char>(); 
 
         /// <summary>
         /// получаем рандомный номер в пределах размера массива
@@ -42,12 +42,14 @@ namespace GallowsGame
 
         public bool IsCharUsed(char c)
         {
-            return UserInput.Contains(c);
+            return UserInputList.Contains(c);
         }
 
         public bool IsCharContained(char c)
         {
-            UserInput.Add(c);
+            c = char.ToLower(c);
+            UserInputList.Add(c);
+            UserInputList.Sort();
             bool result = HiddenWord.Contains(c);
             if (!result)
                 NumberOfAttemps++;
