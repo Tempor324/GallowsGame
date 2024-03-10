@@ -7,38 +7,24 @@ using System.Threading.Tasks;
 
 namespace GallowsGame.Сlasses
 {
-    internal class ConsoleGUI
+    internal class ConsoleGUI : UserInterface
     {
         private static string Placeholder { get; set; } = "_";
-        //также тянуть текст из файла, например, для текста на разных языках? 
 
-        private Game Game { get; set; }
-
-        private static List<string> Responses { get; set; } = [
-            "",
+        protected static List<string> Responses { get; set; } = [
+            //"",
             "Некорректный ввод! Введите букву английского алфавита.",
             "Введите букву, которую вы ещё не вводили.",
             "Ошибка!", //погодите, а для чего это нужно? Это же на виселице должно отображаться.
             "Вас повесили!",
             "Победа!"
-            ]; 
-        private int ResponeCode {  get; set; } 
-            //почему-то не нравится такой вариант реализации, но все варианты, что крутятся в голове, кажутся либо
-            //логичным продолжением этой идеи, либо чем-то ещё более худшим или вовсе неосмысленным бредом.
+            ]; //нужно адаптировать под enum
 
+        //private int ResponeStatusCode { get; set; } //перенёс из UI, так как нужен для вывода сообщения.
+        
+        //также тянуть текст из файла, например, для текста на разных языках? 
 
         public static string Title { get; set; } = "Gallows game";
-
-        public void StartGame(Game game)
-        {
-            if (game == null)
-            {
-                Console.WriteLine("Error, game is NULL");
-                return;
-            }
-            Game = game;
-            Update();
-        }
         
         public void Update()
         {
@@ -53,8 +39,9 @@ namespace GallowsGame.Сlasses
             {
                 NumberOfAttempsRender();
             }
-            char userInput = UserRequest(); //поменять подход: нужно принимать от пользователя текст, его проверять и устанавливать статус, что будет выводиться далее.
-            UserResponseRender(userInput);
+            //char userInput = UserRequest(); //поменять подход: нужно принимать от пользователя текст, его проверять и устанавливать статус, что будет выводиться далее.
+            //UserResponseRender(userInput);
+            //string a = Responses[0];
             Console.WriteLine("\nНажмите любую клавишу для продолжения...");
             Console.ReadKey();
         }
@@ -74,18 +61,18 @@ namespace GallowsGame.Сlasses
             throw new NotImplementedException();
         }
 
-        private char UserRequest()
-        {
-            throw new NotImplementedException();
-            //return 'X';
-        }
+        //protected override char UserRequest(char a)
+        //{
+        //    throw new NotImplementedException();
+        //    //return 'X';
+        //}
 
         private void UserInputListRender()
         {
             throw new NotImplementedException();
         }
 
-        private void UserResponseRender(char c) //переработать полностью
+        public override void CheckValue(char c) //переработать под enum
         {
             if (!IsCharValid(c))
             {

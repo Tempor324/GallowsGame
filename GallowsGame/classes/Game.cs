@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GallowsGame
 {
-    internal class Game
+    public class Game
     {
         private static string[] _words = { "speed", "fox", "football", "nitroglycerin" }; //подключить подгрузку из файла
         //можно ещё засунуть время игры сюда. Или нет
