@@ -5,22 +5,23 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GallowsGame.Сlasses
+
+namespace GallowsGame //проблема с именованием, конфликт с system.console
+                      //да и как вообще правильно использовать namespace?
 {
     internal class ConsoleGUI : UserInterface
     {
         private static string Placeholder { get; set; } = "_";
 
         protected static List<string> Responses { get; set; } = [
-            //"",
+            "",
             "Некорректный ввод! Введите букву английского алфавита.",
             "Введите букву, которую вы ещё не вводили.",
             "Ошибка!", //погодите, а для чего это нужно? Это же на виселице должно отображаться.
             "Вас повесили!",
-            "Победа!"
-            ]; //нужно адаптировать под enum
-
-        //private int ResponeStatusCode { get; set; } //перенёс из UI, так как нужен для вывода сообщения.
+            "Победа!",
+            //"Ошибка: игра не началась." //должно работать по-другому, вероятно
+            ]; //можно преобразовать в hash-map
         
         //также тянуть текст из файла, например, для текста на разных языках? 
 
@@ -39,6 +40,20 @@ namespace GallowsGame.Сlasses
             {
                 NumberOfAttempsRender();
             }
+            ResponseStatus status = CheckValue(Console.Read().ToString()[0]);
+            switch (status) //поменять всё на hash-map
+            {
+                case ResponseStatus.InvalidInput:
+                    //Console.WriteLine(Responses[])
+                    break;
+                case ResponseStatus.CharIsUsed:
+                    break;
+                case ResponseStatus.CorrectInput:
+                    break;
+                case ResponseStatus.PlayerMistake:
+                    break;
+            }
+
             //char userInput = UserRequest(); //поменять подход: нужно принимать от пользователя текст, его проверять и устанавливать статус, что будет выводиться далее.
             //UserResponseRender(userInput);
             //string a = Responses[0];
@@ -72,30 +87,20 @@ namespace GallowsGame.Сlasses
             throw new NotImplementedException();
         }
 
-        public override void CheckValue(char c) //переработать под enum
-        {
-            if (!IsCharValid(c))
-            {
-                Console.WriteLine("Некорректный ввод! Введите букву английского алфавита.");
-                return;
-            }
-            if (Game.IsCharUsed(c))
-            {
-                Console.WriteLine("Введите букву, которую вы ещё не вводили.");
-                return;
-            }
-            if (Game.IsCharContained(c))
-            {
-                Console.WriteLine("Ошибка!");
-
-            }
-        }
-
-        private bool IsCharValid(char c) 
-        {
-            throw new NotImplementedException();
-            //return false; 
-        }
-        
+        //public override ResponseStatus CheckValue(char c) //переработать под enum
+        //{
+        //    if (!IsCharValid(c))
+        //    {
+        //        return ResponseStatus.InvalidInput;
+        //    }
+        //    if (Game.IsCharUsed(c))
+        //    {
+        //        return ResponseStatus.CharIsUsed;
+        //    }
+        //    if (Game.IsCharContained(c))
+        //    {
+        //        return ResponseStatus.PlayerMistake;
+        //    }
+        //}
     }
 }

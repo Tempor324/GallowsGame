@@ -1,16 +1,21 @@
-﻿using GallowsGame.structures;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GallowsGame
+namespace GallowsGame.Lib.Core
 {
     public class Game
     {
         private static string[] _words = { "speed", "fox", "football", "nitroglycerin" }; //подключить подгрузку из файла
         //можно ещё засунуть время игры сюда. Или нет
+        private static string GetRandomWord()
+        { 
+            var random = new Random();
+            return _words[random.Next(_words.Length-1)];            
+        }
+
         private string _hiddenWord;
 
         public string HiddenWord 
@@ -22,22 +27,10 @@ namespace GallowsGame
         public int NumberOfAttemps { get; private set; } = 0;
         public List<char> UserInputList { get; private set; } = new List<char>(); 
 
-        /// <summary>
-        /// получаем рандомный номер в пределах размера массива
-        /// возвращаем слово по индексу
-        /// </summary>
-        /// <returns></returns>
-        private static string GetRandomWord()
-        { 
-            var random = new Random();
-            return _words[random.Next(_words.Length-1)];            
-        }
-        
         //есть ли принципиальная разница между конструктором и гипотетическим методом StartGame?
-        public Game(/*out int Length*/)
+        public Game()
         {
             HiddenWord = GetRandomWord();
-            //Length = HiddenWord.Length; //нет, бредовая идея, точно также можно передавать и само слово
         }
 
         public bool IsCharUsed(char c)
@@ -75,7 +68,5 @@ namespace GallowsGame
         //здесь же можно проверить на валидность.
         //должны быть какие-то коды для сообщений вызывающему методу
         //...хотя нет, на корректность и валидность должен проверять клиент, здесь - максимум исключение
-
-
     }
 }
