@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GallowsGame.enums
+namespace GallowsGame.Lib.Core
 {
     public enum ResponseStatus
     {
-        IncorrectInput,
+        InvalidInput,
         CharIsUsed,
-        PlayerMistake,
-        Lose,
-        Win
+        CorrectInput,
+        PlayerMistake
     }
 }
