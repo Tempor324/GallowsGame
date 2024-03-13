@@ -10,7 +10,9 @@ namespace GallowsGame.Lib.Core
     {
         InvalidInput,
         CharIsUsed,
+        PlayerMistake,
         CorrectInput,
-        PlayerMistake
+        Lose,
+        Win
     }
 }

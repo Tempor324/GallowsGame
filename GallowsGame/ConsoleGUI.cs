@@ -6,33 +6,34 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace GallowsGame //проблема с именованием, конфликт с system.console
-                      //да и как вообще правильно использовать namespace?
+namespace GallowsGame.ConsoleGame   //проблема с именованием, конфликт с system.console
+                                    //да и как вообще правильно использовать namespace?
 {
     internal class ConsoleGUI : UserInterface
     {
         private static string Placeholder { get; set; } = "_";
-
-        protected static List<string> Responses { get; set; } = [
-            "",
-            "Некорректный ввод! Введите букву английского алфавита.",
-            "Введите букву, которую вы ещё не вводили.",
-            "Ошибка!", //погодите, а для чего это нужно? Это же на виселице должно отображаться.
-            "Вас повесили!",
-            "Победа!",
-            //"Ошибка: игра не началась." //должно работать по-другому, вероятно
-            ]; //можно преобразовать в hash-map
-        
+            
+        private static Dictionary<ResponseStatus, string> Responses { get; set; } = new()
+        {
+            [ResponseStatus.InvalidInput] = "Некорректный ввод! Введите букву английского алфавита.",
+            [ResponseStatus.CharIsUsed] = "Введите букву, которую вы ещё не вводили.",
+            [ResponseStatus.PlayerMistake] = "Ошибка!",
+            [ResponseStatus.CorrectInput] = "",
+            [ResponseStatus.Win] = "Победа!",
+            [ResponseStatus.Lose] = "Вас повесили!"
+        };
         //также тянуть текст из файла, например, для текста на разных языках? 
 
-        public static string Title { get; set; } = "Gallows game";
-        
+        public static string Title { get; set; } = "Gallows game v. alpha 01";
+
+        public ResponseStatus? Status { get; set; } //пришлось сделать public set, иначе я не знаю, как обнулять его без пересоздания UI
+
         public void Update()
         {
             Console.Clear();
             GallowsRender();
             WordRender();
-            if (Game.UserInputList.Count() != 0)
+            if (Game.UserInputList.Count != 0)
             {
                 UserInputListRender();
             }
@@ -40,67 +41,139 @@ namespace GallowsGame //проблема с именованием, конфли
             {
                 NumberOfAttempsRender();
             }
-            ResponseStatus status = CheckValue(Console.Read().ToString()[0]);
-            switch (status) //поменять всё на hash-map
-            {
-                case ResponseStatus.InvalidInput:
-                    //Console.WriteLine(Responses[])
-                    break;
-                case ResponseStatus.CharIsUsed:
-                    break;
-                case ResponseStatus.CorrectInput:
-                    break;
-                case ResponseStatus.PlayerMistake:
-                    break;
-            }
+            ResponseRender();
+            //GetUserInput();
+        }
 
-            //char userInput = UserRequest(); //поменять подход: нужно принимать от пользователя текст, его проверять и устанавливать статус, что будет выводиться далее.
-            //UserResponseRender(userInput);
-            //string a = Responses[0];
-            Console.WriteLine("\nНажмите любую клавишу для продолжения...");
-            Console.ReadKey();
+        public bool IsEnd()
+        {
+            return Status == ResponseStatus.Win || Status == ResponseStatus.Lose;
         }
 
         private void NumberOfAttempsRender()
         {
-            throw new NotImplementedException();
+            Console.WriteLine($"Попыток осталось: {Game.MaxNumberOfAttemps - Game.NumberOfAttemps}");
         }
 
         private void GallowsRender()
         {
-            throw new NotImplementedException();
+            switch (Game.NumberOfAttemps) //переделать, это не надо так хранить
+            {
+                case 0:
+                    Console.WriteLine("""
+                        '-------'
+                        |       |
+                        |      [ ]
+                        |
+                        |
+                        |
+                        """);
+                    break;
+                case 1:
+                    Console.WriteLine("""
+                        '-------'
+                        |       |
+                        |      [O]
+                        |
+                        |
+                        |
+                        """);
+                    break;
+                case 2:
+                    Console.WriteLine("""
+                        '-------'
+                        |       |
+                        |      [O]
+                        |       |
+                        |
+                        |
+                        """);
+                    break;
+                case 3:
+                    Console.WriteLine("""
+                        '-------'
+                        |       |
+                        |      [O]
+                        |      /|
+                        |
+                        |
+                        """);
+                    break;
+                case 4:
+                    Console.WriteLine("""
+                        '-------'
+                        |       |
+                        |      [O]
+                        |      /|\
+                        |
+                        |
+                        """);
+                    break;
+                case 5:
+                    Console.WriteLine("""
+                        '-------'
+                        |       |
+                        |      [O]
+                        |      /|\
+                        |      /
+                        |
+                        """);
+                    break;
+                case 6:
+                    Console.WriteLine("""
+                        '-------'
+                        |       |
+                        |      [O]
+                        |      /|\
+                        |      / \
+                        |
+                        """);
+                    break;
+            }
         }
 
         private void WordRender()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            Console.Write("Слово: ");
+            for (int i = 0; i < Game.HiddenWord.Length; i++)
+            {
+                if (IndexesOfChars.Contains(i))
+                {
+                    Console.Write(Game.HiddenWord[i]);
+                }
+                else
+                {
+                    Console.Write(Placeholder+' ');
+                }
+            }
+            Console.WriteLine();
         }
-
-        //protected override char UserRequest(char a)
-        //{
-        //    throw new NotImplementedException();
-        //    //return 'X';
-        //}
 
         private void UserInputListRender()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Введенные буквы: ");
+            foreach (char c in Game.UserInputList) //не так это должно работать
+            {
+                Console.Write(c + ", ");
+            }
+            Console.WriteLine();
         }
 
-        //public override ResponseStatus CheckValue(char c) //переработать под enum
-        //{
-        //    if (!IsCharValid(c))
-        //    {
-        //        return ResponseStatus.InvalidInput;
-        //    }
-        //    if (Game.IsCharUsed(c))
-        //    {
-        //        return ResponseStatus.CharIsUsed;
-        //    }
-        //    if (Game.IsCharContained(c))
-        //    {
-        //        return ResponseStatus.PlayerMistake;
-        //    }
-        //}
+        public void GetUserInput()
+        {
+            Console.Write("Ваш ввод: ");
+            char userInput = Console.ReadKey().KeyChar;
+            Status = CheckValue(userInput);
+        }
+
+        private void ResponseRender()
+        {
+            //if( Status == null || Status == ResponseStatus.CorrectInput) //лишняя проверка, получается
+            //{
+            //    return;
+            //} 
+            Console.WriteLine(Responses[Status ?? ResponseStatus.CorrectInput]); //чтобы компилятор не ругался на ResponseStatus? сделал проверку
+        }
     }
 }

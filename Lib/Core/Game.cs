@@ -8,24 +8,25 @@ namespace GallowsGame.Lib.Core
 {
     public class Game
     {
-        private static string[] _words = { "speed", "fox", "football", "nitroglycerin" }; //подключить подгрузку из файла
+        private static string[] Words { get; set; } = ["speed", "fox", "football", "nitroglycerin"]; //подключить подгрузку из файла
         //можно ещё засунуть время игры сюда. Или нет
         private static string GetRandomWord()
         { 
             var random = new Random();
-            return _words[random.Next(_words.Length-1)];            
+            return Words[random.Next(Words.Length-1)];            
         }
 
-        private string _hiddenWord;
+        //public GameStatus Status { get; set; } = GameStatus.Default;
 
+        private string _hiddenWord;
         public string HiddenWord 
         { 
             get => _hiddenWord; 
             private set => _hiddenWord = value.Trim().ToLower(); 
         }
-
+        public static int MaxNumberOfAttemps { get; set; } = 6;
         public int NumberOfAttemps { get; private set; } = 0;
-        public List<char> UserInputList { get; private set; } = new List<char>(); 
+        public List<char> UserInputList { get; private set; } = []; 
 
         //есть ли принципиальная разница между конструктором и гипотетическим методом StartGame?
         public Game()
@@ -33,7 +34,7 @@ namespace GallowsGame.Lib.Core
             HiddenWord = GetRandomWord();
         }
 
-        public bool IsCharUsed(char c)
+        public bool IsCharWasUsed(char c)
         {
             return UserInputList.Contains(c);
         }
@@ -51,7 +52,7 @@ namespace GallowsGame.Lib.Core
 
         public List<int> FindAllIndexesOfChar(char c)
         {
-            List<int> result = new List<int>();
+           var result = new List<int>();
             for (int i = 0; i < HiddenWord.Length; i++)
             {
                 if (HiddenWord[i] == c)

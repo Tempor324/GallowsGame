@@ -11,43 +11,49 @@ namespace GallowsGame.Lib.Core
     {
         protected Game Game { get; set; }
 
-        protected GameStatus status { get; set; }
+        protected List<int> IndexesOfChars { get; set; } = [];
+        //protected GameStatus status { get; set; }
+
+        protected static bool IsCharValid(char c)
+        {
+            return c >= 97 & c <= 122;
+        }
 
         public UserInterface() 
         {
-            status = GameStatus.GameIsNull;
+            //status = GameStatus.GameIsNull;
         }
 
-        public virtual void StartGame() //подробнее изучить механизм "наследования" методов
+        public virtual void StartGame()
         {
             Game = new Game();
-            status = GameStatus.None;
+            //status = GameStatus.None;
         }
 
-        public virtual ResponseStatus CheckValue(char c)
+        public ResponseStatus CheckValue(char c)
         {
             if (!IsCharValid(c))
             {
                 return ResponseStatus.InvalidInput;
             }
-            if (Game.IsCharUsed(c))
+            if (Game.IsCharWasUsed(c))
             {
                 return ResponseStatus.CharIsUsed;
             }
-            if (Game.IsCharContained(c))
+            if (!Game.IsCharContained(c))
             {
+                if (Game.NumberOfAttemps == Game.MaxNumberOfAttemps)
+                {
+                    return ResponseStatus.Lose;
+                }
                 return ResponseStatus.PlayerMistake;
             }
+            IndexesOfChars.AddRange(Game.FindAllIndexesOfChar(c));
+            if (IndexesOfChars.Count == Game.HiddenWord.Length)
+            {
+                return ResponseStatus.Win;
+            }
             return ResponseStatus.CorrectInput;
-        }
-
-        protected bool IsCharValid(char c)
-        {
-            //if (Status == ResponseStatus.GameIsNull)
-            //{
-            //    return false; //ох, как мне не нравится этот подход, но ничего толкового в голову не приходит.
-            //}
-            return c >= 97 & c <= 122;
         }
     }
 }
