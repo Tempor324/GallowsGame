@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 namespace GallowsGame.ConsoleGame   //проблема с именованием, конфликт с system.console
                                     //да и как вообще правильно использовать namespace?
 {
-    internal class ConsoleGUI : UserInterface
+    internal class ConsoleUI : UserInterface
     {
-        private static string Placeholder { get; set; } = "_";
-            
+        public const string TITLE  = "Gallows game v. alpha 01.02";
+
+        private static string Placeholder { get; set; } = "_";  
         private static Dictionary<ResponseStatus, string> Responses { get; set; } = new()
         {
             [ResponseStatus.InvalidInput] = "Некорректный ввод! Введите букву английского алфавита.",
@@ -24,9 +25,13 @@ namespace GallowsGame.ConsoleGame   //проблема с именованием
         };
         //также тянуть текст из файла, например, для текста на разных языках? 
 
-        public static string Title { get; set; } = "Gallows game v. alpha 01";
+        public ResponseStatus? Status { get; private set; }
 
-        public ResponseStatus? Status { get; set; } //пришлось сделать public set, иначе я не знаю, как обнулять его без пересоздания UI
+        public override void StartGame()
+        {
+            base.StartGame();
+            Status = ResponseStatus.CorrectInput;
+        }
 
         public void Update()
         {
@@ -43,16 +48,18 @@ namespace GallowsGame.ConsoleGame   //проблема с именованием
             }
             ResponseRender();
             //GetUserInput();
+        } 
+        
+        public void GetUserInput()
+        {
+            Console.Write("Ваш ввод: ");
+            char userInput = Console.ReadKey().KeyChar;
+            Status = CheckValue(userInput);
         }
 
         public bool IsEnd()
         {
             return Status == ResponseStatus.Win || Status == ResponseStatus.Lose;
-        }
-
-        private void NumberOfAttempsRender()
-        {
-            Console.WriteLine($"Попыток осталось: {Game.MaxNumberOfAttemps - Game.NumberOfAttemps}");
         }
 
         private void GallowsRender()
@@ -136,11 +143,11 @@ namespace GallowsGame.ConsoleGame   //проблема с именованием
         {
             //throw new NotImplementedException();
             Console.Write("Слово: ");
-            for (int i = 0; i < Game.HiddenWord.Length; i++)
+            for (int i = 0; i < Game.GetHiddenWordLength(); i++)
             {
-                if (IndexesOfChars.Contains(i))
+                if (Game.IndexesOfChars.Contains(i))
                 {
-                    Console.Write(Game.HiddenWord[i]);
+                    Console.Write(Game.HiddenWord[i]); //убрать прямое обращение к строке и закрыть к не доступ
                 }
                 else
                 {
@@ -152,19 +159,13 @@ namespace GallowsGame.ConsoleGame   //проблема с именованием
 
         private void UserInputListRender()
         {
-            Console.WriteLine("Введенные буквы: ");
-            foreach (char c in Game.UserInputList) //не так это должно работать
-            {
-                Console.Write(c + ", ");
-            }
-            Console.WriteLine();
+            Console.Write("Введенные буквы: ");
+            Console.WriteLine(string.Join(", ", Game.UserInputList));
         }
 
-        public void GetUserInput()
+        private void NumberOfAttempsRender()
         {
-            Console.Write("Ваш ввод: ");
-            char userInput = Console.ReadKey().KeyChar;
-            Status = CheckValue(userInput);
+            Console.WriteLine($"Попыток осталось: {Game.MAX_NUMBER_OF_ATTEMPS - Game.NumberOfAttemps}");
         }
 
         private void ResponseRender()

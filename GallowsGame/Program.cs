@@ -6,24 +6,11 @@ namespace GallowsGame.ConsoleGame
     {
         static void Main(string[] args)
         {
-            
+            ConsoleUI UI = new();
             while (true)
             {
                 Console.WriteLine("Добро пожаловать в игру \"Виселица\"! \n");
-                Console.WriteLine("Начать новую игру(Y) или выйти из приложения(Q)? ");
-                while (true)
-                {
-                    char key = Console.ReadKey().KeyChar;
-                    if (key == 'q' || key == 'Q')
-                    {
-                        Environment.Exit(0);
-                    }
-                    if (key == 'y' || key == 'Y')
-                    {
-                        break;
-                    }
-                }
-                ConsoleGUI UI = new(); //в цикле, так как много значений, которые нужно обнулять
+                StartNewGameOrQuitApplication();
                 UI.StartGame();
                 while (true) 
                 {
@@ -32,14 +19,31 @@ namespace GallowsGame.ConsoleGame
                     if (UI.IsEnd())
                     {
                         UI.Update();
-                        UI.Status = null;
                         Console.WriteLine("\nНажмите любую клавишу для продолжения...");
-                        Console.ReadKey(false);
+                        Console.ReadKey(true);
                         Console.Clear();
                         break;
                     }
                 }
                 
+            }
+        }
+
+        static void StartNewGameOrQuitApplication()
+        {
+            Console.WriteLine("Начать новую игру(Y) или выйти из приложения(Q)? ");
+            while (true)
+            {
+                char key = Console.ReadKey(true).KeyChar;
+                if (key == 'q' || key == 'Q')
+                {
+                    Environment.Exit(0);
+                }
+                if (key == 'y' || key == 'Y')
+                {
+                    break;
+                }
+
             }
         }
     }

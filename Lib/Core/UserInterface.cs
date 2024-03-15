@@ -6,28 +6,19 @@ namespace GallowsGame.Lib.Core
     /// интерфейс для взаимодействия клиента с игрой. Принимает информацию от игрока, проверяет валидность ввода, 
     /// передаёт сообщения экземпляру игры и информацию пользователю.
     /// Проще говоря, все действия с объектом Game должны осуществляться через потомков данного класса.
+    /// P.s. если я правильно понимаю, по сути, этот класс выполняет роль API для взаимодействия с игрой. Для корректности
+    /// следует переписать реализацию, сделать её более "стандартной"
     /// </summary>
     public abstract class UserInterface
     {
         protected Game Game { get; set; }
 
-        protected List<int> IndexesOfChars { get; set; } = [];
-        //protected GameStatus status { get; set; }
-
-        protected static bool IsCharValid(char c)
-        {
-            return c >= 97 & c <= 122;
-        }
-
-        public UserInterface() 
-        {
-            //status = GameStatus.GameIsNull;
-        }
-
+        
+        
         public virtual void StartGame()
         {
             Game = new Game();
-            //status = GameStatus.None;
+            //IndexesOfChars = new List<int>();
         }
 
         public ResponseStatus CheckValue(char c)
@@ -42,18 +33,24 @@ namespace GallowsGame.Lib.Core
             }
             if (!Game.IsCharContained(c))
             {
-                if (Game.NumberOfAttemps == Game.MaxNumberOfAttemps)
+                if (Game.NumberOfAttemps == Game.MAX_NUMBER_OF_ATTEMPS)
                 {
                     return ResponseStatus.Lose;
                 }
                 return ResponseStatus.PlayerMistake;
             }
-            IndexesOfChars.AddRange(Game.FindAllIndexesOfChar(c));
-            if (IndexesOfChars.Count == Game.HiddenWord.Length)
+            Game.IndexesOfChars.AddRange(Game.FindAllIndexesOfChar(c));
+            if (Game.IndexesOfChars.Count == Game.GetHiddenWordLength())
             {
                 return ResponseStatus.Win;
             }
             return ResponseStatus.CorrectInput;
         }
+
+        protected static bool IsCharValid(char c)
+        {
+            return c >= 97 & c <= 122;
+        }
+       
     }
 }

@@ -6,34 +6,52 @@ using System.Threading.Tasks;
 
 namespace GallowsGame.Lib.Core
 {
-    public class Game
+    public class Game //GallowsGame конфликтует с именем пространства имён
     {
-        private static string[] Words { get; set; } = ["speed", "fox", "football", "nitroglycerin"]; //подключить подгрузку из файла
+        //неподходящая и не совсем (или совсем не) корректная абстракция. Игра сразу сообщает, сколько есть знакомест,
+        //какие заняты какими символами, и не требуется хранение индексов чисел отдельно от самих чисел
+        //и да, пока просто переезд из интерфейса сюда
+        public List<int> IndexesOfChars { get; set; } = [];
+
+        private static string[] Words { get; set; } = ["speed", "fox", "football", "nitroglycerin"]; 
+        //подключить подгрузку из файла
         //можно ещё засунуть время игры сюда. Или нет
+        public const int MAX_NUMBER_OF_ATTEMPS = 6;
+  
         private static string GetRandomWord()
         { 
             var random = new Random();
             return Words[random.Next(Words.Length-1)];            
         }
 
-        //public GameStatus Status { get; set; } = GameStatus.Default;
-
+        //должна была быть структурой для хранения "пустого" слова, заполняемого игроком.
+        //не работает, нулами не заполняется, иные символы - не совсем корректное решение
+        //public List<char> UserInput { get; set; } = []; 
+        public List<char> UserInputList { get; private set; } = []; 
         private string _hiddenWord;
-        public string HiddenWord 
+        public string HiddenWord //для безопасности от копирования нужно сделать private, но проблема с отображением символов
         { 
             get => _hiddenWord; 
-            private set => _hiddenWord = value.Trim().ToLower(); 
+            set => _hiddenWord = value.Trim().ToLower(); 
         }
-        public static int MaxNumberOfAttemps { get; set; } = 6;
-        public int NumberOfAttemps { get; private set; } = 0;
-        public List<char> UserInputList { get; private set; } = []; 
 
-        //есть ли принципиальная разница между конструктором и гипотетическим методом StartGame?
+        public int GetHiddenWordLength()
+        {
+            return HiddenWord.Length;
+        }
+
+        public int NumberOfAttemps { get; private set; } = 0;
+
+
         public Game()
         {
             HiddenWord = GetRandomWord();
+            //for (int i=0; i < HiddenWord.Length; i++)
+            //{
+            //    UserInput.Add(null); //не работает
+            //}
         }
-
+        
         public bool IsCharWasUsed(char c)
         {
             return UserInputList.Contains(c);
@@ -63,11 +81,6 @@ namespace GallowsGame.Lib.Core
             return result;
         }
 
-        //напрашивается логика для победы/поражения, но не знаю, как это лучше реализовать, и стоит ли реализовывать в игровом классе
-
-        //проверка корректности ввода
-        //здесь же можно проверить на валидность.
-        //должны быть какие-то коды для сообщений вызывающему методу
-        //...хотя нет, на корректность и валидность должен проверять клиент, здесь - максимум исключение
+        //на корректность и валидность должен проверять клиент, здесь - максимум исключение
     }
 }
